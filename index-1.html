@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffd83d">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>MesaLibre Temuco – Restaurantes</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f5f0;--card:#fff;--ink:#1b2a41;--mut:#5d6b7d;--brand:#ffd83d;--brand-ink:#1b2a41;--acc:#d62f2f;--ok:#12805c;--line:#dfe2d8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161d;--card:#1b212b;--ink:#eef0ea;--mut:#9aa6b5;--line:#2c3441;--acc:#ff6b5e;--ok:#4fd1a1}}
+:root[data-theme="dark"]{--bg:#12161d;--card:#1b212b;--ink:#eef0ea;--mut:#9aa6b5;--line:#2c3441;--acc:#ff6b5e;--ok:#4fd1a1}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Figtree,system-ui,sans-serif;line-height:1.45}
+h1,h2,h3{font-family:'Bricolage Grotesque',Georgia,serif;margin:0}
+header{background:var(--brand);color:var(--brand-ink);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;padding:12px 16px}
+.bar{max-width:1100px;margin:auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.logo{font-family:'Bricolage Grotesque',Georgia,serif;font-weight:800;font-size:1.4rem}
+.search{flex:1;min-width:200px;display:flex;background:#fff;border-radius:6px;box-shadow:0 1px 3px #0003}
+.search input{flex:1;border:0;padding:11px 14px;font:inherit;background:transparent;color:#1b2a41;min-width:0}
+.search input:focus,button:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+.cartbtn{background:var(--brand-ink);color:#fff;border:0;border-radius:6px;padding:10px 14px;font:600 1rem Figtree,sans-serif;cursor:pointer}
+main{max-width:1100px;margin:auto;padding:16px}
+.hero{padding:8px 0 4px}
+.hero h1{font-size:clamp(1.6rem,5vw,2.4rem);line-height:1.1}
+.hero p{color:var(--mut);margin:6px 0 0}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:14px 0 8px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:99px;font:600 .9rem Figtree,sans-serif;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 14px;color:var(--mut)}
+.tools select{font:inherit;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.tools label{display:flex;gap:6px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.pic{height:110px;display:grid;place-items:center;font-size:3.4rem}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.body h3{font-size:1.15rem}
+.meta{color:var(--mut);font-size:.88rem}
+.free{color:var(--ok);font-weight:600}
+.dish{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px dashed var(--line);padding-top:8px;margin-top:auto}
+.dish b{font-size:1.1rem}
+.add{background:var(--acc);color:#fff;border:0;border-radius:6px;padding:8px 12px;font:600 .9rem Figtree,sans-serif;cursor:pointer}
+.empty{grid-column:1/-1;text-align:center;color:var(--mut);padding:40px 0}
+aside{position:fixed;top:0;right:0;bottom:0;width:min(360px,100%);background:var(--card);border-left:1px solid var(--line);transform:translateX(100%);transition:transform .25s;z-index:10;display:flex;flex-direction:column;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px))}
+aside.open{transform:none}
+aside ul{list-style:none;padding:0;margin:12px 0;flex:1;overflow:auto}
+aside li{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.total{display:flex;justify-content:space-between;font-weight:600;font-size:1.15rem;margin-bottom:10px}
+.pay{background:var(--ok);color:#fff;border:0;border-radius:6px;padding:12px;font:600 1rem Figtree,sans-serif;cursor:pointer;width:100%}
+.x{background:none;border:0;color:var(--ink);font-size:1.4rem;cursor:pointer;float:right}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:6px;z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+.plans{margin-top:36px}
+.plans h2{font-size:1.6rem}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.plan .pr{font:800 2rem 'Bricolage Grotesque',Georgia,serif}
+.plan .pr small{font:400 .9rem Figtree,sans-serif;color:var(--mut)}
+.plan ul{margin:0;padding-left:18px;color:var(--mut)}
+.plan button{margin-top:auto}
+.plan.sel{border:2px solid var(--ok)}
+dialog{border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:20px;width:min(360px,92vw)}
+dialog::backdrop{background:#0008}
+dialog input{width:100%;padding:10px;margin:10px 0 14px;font:inherit;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.row{display:flex;gap:8px;justify-content:flex-end}
+.row .chip{border-radius:6px}
+.navlink{color:var(--brand-ink);font-weight:600;text-decoration:underline}
+.rk{color:var(--acc)}
+.banner{background:var(--card);border:1px solid var(--ok);color:var(--ok);border-radius:6px;padding:10px 14px;margin-top:12px;font-weight:600}
+.wa{display:block;text-align:center;border:1px solid var(--ok);color:var(--ok);border-radius:6px;padding:8px;font-weight:600;text-decoration:none;margin-top:4px}
+.opt{display:flex;gap:14px;flex-wrap:wrap;margin:6px 0 8px}
+.opt label{display:flex;gap:6px;align-items:center}
+#addr{width:100%;padding:10px;margin-bottom:10px;font:inherit;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.envio{display:flex;justify-content:space-between;color:var(--mut);margin-bottom:6px}
+@media (prefers-reduced-motion:reduce){aside{transition:none}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+<span class="logo">MesaLibre <small style="font:600 .8rem Figtree,sans-serif">Temuco</small></span>
+<div class="search"><input id="q" type="search" placeholder="Busca restaurantes, platillos o cocinas" aria-label="Buscar"></div>
+<a class="navlink" href="#planes">Planes</a>
+<button class="cartbtn" id="open">🛒 Carrito (<span id="n">0</span>)</button>
+</div></header>
+
+<main>
+<div class="hero"><h1>Los restaurantes de Temuco, en un solo lugar</h1><p>Ranking según reseñas de clientes. Reparto gratis con el repartidor de cada local.</p></div>
+<div class="banner" id="bn"></div>
+<div class="filters" id="chips"></div>
+<div class="tools">
+<span id="count"></span>
+<label>Ordenar <select id="sort">
+<option value="rank">Ranking por reseñas</option>
+<option value="rate">Mejor calificados</option>
+<option value="time">Más rápidos</option>
+<option value="price">Menor precio</option>
+</select></label>
+</div>
+<div class="grid" id="grid"></div>
+<section class="plans" id="planes">
+<h2>Planes mensuales</h2>
+<div class="pg">
+<div class="plan" id="pu"><h3>Para clientes</h3><div class="pr">$5.000<small> / mes</small></div>
+<ul><li>Tus primeros 5 pedidos son gratis</li><li>Luego pide sin límite en todos los locales</li><li>Deja reseñas y ayuda a ordenar el ranking</li><li>Reparto a domicilio sin costo</li><li>Cancelas cuando quieras</li></ul>
+<button class="add" data-plan="user" id="bu">Suscribirme</button></div>
+<div class="plan"><h3>Para restaurantes y locales</h3><div class="pr">$39.990<small> / mes · primer mes gratis</small></div>
+<ul><li>Tu local publicado en MesaLibre Temuco</li><li>Recibe pedidos de clientes de la ciudad</li><li>Reparto con tu propio repartidor</li><li>Sin comisión por venta</li></ul>
+<button class="add" data-plan="rest">Publicar mi local gratis 1 mes</button></div>
+</div></section>
+</main>
+<dialog id="rd"><h3 id="rt"></h3><label>Tu calificación<br><select id="rs" style="width:100%;padding:10px;margin:10px 0 14px;font:inherit"><option value="5">5 estrellas</option><option value="4">4 estrellas</option><option value="3">3 estrellas</option><option value="2">2 estrellas</option><option value="1">1 estrella</option></select></label><div class="row"><button class="chip" id="rc">Cancelar</button><button class="add" id="rok">Enviar reseña</button></div></dialog>
+<dialog id="dlg"><h3 id="dt"></h3><p class="meta" id="dp"></p>
+<input id="di" aria-label="Dato de contacto"><div class="row"><button class="chip" id="dc">Cancelar</button><button class="add" id="dok">Confirmar</button></div></dialog>
+
+<aside id="cart" aria-label="Carrito">
+<button class="x" id="close" aria-label="Cerrar carrito">×</button>
+<h2>Tu pedido</h2>
+<ul id="items"></ul>
+<div class="opt" role="radiogroup" aria-label="Forma de entrega"><label><input type="radio" name="md" value="dom" checked> Reparto a domicilio</label><label><input type="radio" name="md" value="ret"> Retiro en el local</label></div>
+<input id="addr" placeholder="Dirección de entrega en Temuco" aria-label="Dirección">
+<div class="envio"><span>Envío</span><span id="env">$0</span></div>
+<div class="total"><span>Total</span><span id="tot">$0</span></div>
+<button class="pay" id="pay">Confirmar pedido</button>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const R=[
+{n:"Mirin Sushi",w:"56912345601",c:"Sushi",e:"🍣",r:4.7,rv:820,t:40,f:0,d:"Promo 30 piezas mixtas",p:15990,bg:"#d5ecf2"},
+{n:"Kami Sushi",w:"56912345602",c:"Sushi",e:"🍱",r:4.6,rv:1150,t:35,f:0,d:"Roll furai palta y queso (10 pzas)",p:7490,bg:"#cfe3f0"},
+{n:"Anka Sushi",w:"56912345603",c:"Sushi",e:"🍤",r:4.5,rv:640,t:45,f:0,d:"Handroll salmón y ciboulette",p:8990,bg:"#dbe9dc"},
+{n:"Papa John's",w:"56912345604",c:"Pizza",e:"🍕",r:4.4,rv:1980,t:30,f:0,d:"Pizza familiar pepperoni",p:14990,bg:"#ffd0cc"},
+{n:"Domino's Pizza",w:"56912345605",c:"Pizza",e:"🍕",r:4.3,rv:2760,t:25,f:0,d:"Pizza mediana napolitana",p:9990,bg:"#ffdcd0"},
+{n:"Café Fit",w:"56912345606",c:"Saludable",e:"🥗",r:4.8,rv:530,t:20,f:0,d:"Bowl de pollo, quínoa y palta",p:6490,bg:"#d4ecd0"}
+];
+const cats=["Todos",...new Set(R.map(x=>x.c))];
+const sc=x=>(x.rv*x.r+200*4.5)/(x.rv+200),rk=x=>[...R].sort((a,b)=>sc(b)-sc(a)).indexOf(x)+1;let used=0,rvN="";let cat="Todos",cart={},sub=false,plan="";const fee=x=>sub?0:x.f;
+const $=id=>document.getElementById(id),m=v=>"$"+v.toLocaleString("es-CL");
+function chips(){$("chips").innerHTML=cats.map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${c}">${c}</button>`).join("")}
+function render(){
+ const q=$("q").value.toLowerCase().trim(),s=$("sort").value;
+ let l=R.filter(x=>(cat==="Todos"||x.c===cat)&&(!q||(x.n+x.c+x.d).toLowerCase().includes(q)));
+ if(s==="rank")l.sort((a,b)=>sc(b)-sc(a));
+ if(s==="rate")l.sort((a,b)=>b.r-a.r);
+ if(s==="time")l.sort((a,b)=>a.t-b.t);
+ if(s==="price")l.sort((a,b)=>a.p-b.p);
+ $("count").textContent=l.length+" restaurantes";
+ $("grid").innerHTML=l.length?l.map(x=>`<article class="card"><div class="pic" style="background:${x.bg}" aria-hidden="true">${x.e}</div><div class="body"><h3><span class="rk">#${rk(x)}</span> ${x.n}</h3><div class="meta">${x.c} · ⭐ ${x.r.toFixed(1)} (${x.rv.toLocaleString("es")})</div><div class="meta">${x.t} min · <span class="free">Reparto gratis</span> · Retiro en local</div><div class="dish"><div><div class="meta">${x.d}</div><b>${m(x.p)}</b></div><button class="add" data-n="${x.n}">Agregar</button></div><a class="wa" href="https://wa.me/${x.w}?text=${encodeURIComponent("Hola "+x.n+", quisiera hacer un pedido")}" target="_blank" rel="noopener">💬 WhatsApp del local</a><button class="chip" data-rv="${x.n}">⭐ Dejar reseña</button></div></article>`).join(""):'<div class="empty">No encontramos restaurantes con esos filtros. Prueba quitar alguno.</div>';
+}
+function cartUI(){
+ const k=Object.keys(cart);let t=0,n=0;
+ $("items").innerHTML=k.length?k.map(id=>{const i=cart[id];t+=i.p*i.q;n+=i.q;return `<li><span>${i.q} × ${i.d}<br><small class="meta">${id}</small></span><b>${m(i.p*i.q)}</b></li>`}).join(""):'<li class="meta">Tu carrito está vacío. Agrega un platillo para empezar.</li>';
+ const dom=document.querySelector('input[name=md]:checked').value==="dom";
+ const env=dom?k.reduce((a,id)=>a+fee(R.find(r=>r.n===id)),0):0;
+ $("addr").style.display=dom?"block":"none";
+ $("env").textContent=env?m(env):"Gratis";
+ $("bn").textContent=sub?"Suscripción activa: pide sin límite":used<5?"Te quedan "+(5-used)+" pedidos gratis":"Se acabaron tus 5 pedidos gratis. Suscríbete por $5.000 al mes para seguir pidiendo";
+ $("n").textContent=n;$("tot").textContent=m(t+env);
+}
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1600)}
+$("chips").onclick=e=>{if(e.target.dataset.c){cat=e.target.dataset.c;chips();render()}};
+$("grid").onclick=e=>{const rv=e.target.dataset.rv;if(rv){if(!sub){location.hash="planes";return toast("Solo los suscritos pueden dejar reseñas")}rvN=rv;$("rt").textContent="Reseña de "+rv;$("rd").showModal();return}
+ const n=e.target.dataset.n;if(!n)return;const x=R.find(r=>r.n===n);
+ cart[n]=cart[n]||{d:x.d,p:x.p,q:0};cart[n].q++;cartUI();toast("Agregado: "+x.d)};
+["q","sort"].forEach(i=>$(i).oninput=render);
+$("open").onclick=()=>$("cart").classList.add("open");
+$("close").onclick=()=>$("cart").classList.remove("open");
+document.querySelectorAll("input[name=md]").forEach(r=>r.onchange=cartUI);
+$("pay").onclick=()=>{if(!Object.keys(cart).length)return toast("Agrega al menos un platillo");
+ const dom=document.querySelector("input[name=md]:checked").value==="dom";
+ if(dom&&!$("addr").value.trim()){$("addr").focus();return toast("Escribe tu dirección de entrega")}
+ if(!sub&&used>=5){$("cart").classList.remove("open");location.hash="planes";return toast("Suscríbete para seguir pidiendo")}
+ if(!sub)used++;cart={};cartUI();$("cart").classList.remove("open");toast(dom?"Pedido confirmado. Va en camino":"Pedido confirmado. Retíralo en el local")};
+const dlg=$("dlg");
+$("rc").onclick=()=>$("rd").close();
+$("rok").onclick=()=>{const x=R.find(r=>r.n===rvN),v=+$("rs").value;x.r=(x.r*x.rv+v)/(x.rv+1);x.rv++;$("rd").close();render();toast("Gracias por tu reseña")};
+document.querySelectorAll("[data-plan]").forEach(b=>b.onclick=()=>{plan=b.dataset.plan;
+ if(plan==="user"&&sub)return toast("Ya tienes tu suscripción activa");
+ $("dt").textContent=plan==="user"?"Suscripción de clientes":"Publica tu local";
+ $("dp").textContent=plan==="user"?"$5.000 al mes. Pide en todos los locales con reparto sin costo.":"Primer mes gratis, luego $39.990 al mes. Publicaremos tu local en MesaLibre Temuco.";
+ $("di").placeholder=plan==="user"?"Tu correo":"Nombre de tu local";$("di").value="";dlg.showModal()});
+$("dc").onclick=()=>dlg.close();
+$("dok").onclick=()=>{if(!$("di").value.trim())return $("di").focus();dlg.close();
+ if(plan==="user"){sub=true;cartUI();$("pu").classList.add("sel");$("bu").textContent="Suscripción activa";render();toast("Suscripción activa")}
+ else toast("Solicitud enviada. Tu primer mes es gratis")};
+chips();render();cartUI();
+</script>
+<script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script>
+</body>
+</html>
